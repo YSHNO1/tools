@@ -3,6 +3,10 @@ package com.ysh.img;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Base64;
 
@@ -93,4 +97,34 @@ public class ImgUtils {
         }
     }
 
+    /**
+     *对图片进行绘制修改-根据图像坐标点绘制红框
+     *@param filePath 源文件路径
+     *@param fileName 生成的新文件名
+     * @param x1 左上角横坐标点
+     * @param y1 右上角横坐标点
+     * @param width 框宽度
+     * @param height 框高度
+     */
+    public void imageDraw(String filePath, String fileName, int x1, int y1, int width, int height){
+        try{
+            File inputFile = new File(filePath);
+            BufferedImage bufferedImage = ImageIO.read(inputFile);
+
+            Graphics2D graphics2D = bufferedImage.createGraphics();
+            graphics2D.setColor(Color.red);
+            // 设置线条的宽度（加粗）
+            graphics2D.setStroke(new BasicStroke(3)); // 3表示线条宽度
+
+            graphics2D.drawRect(x1, y1, width, height);
+
+            //生成新图片 -指定保存路径，可以改为传参
+            File outImageFile = new File(fileName);
+            ImageIO.write(bufferedImage, "png", outImageFile);
+
+            graphics2D.dispose();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }
